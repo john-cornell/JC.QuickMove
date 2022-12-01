@@ -55,6 +55,10 @@ namespace JC.QuickMove
                             Console.WriteLine("Unable to stop service");
                         }
                     }
+                    else
+                    {
+                        Console.WriteLine("Service already stopped");
+                    }
                 }
                 else
                 {
@@ -94,10 +98,21 @@ namespace JC.QuickMove
 
                 if (service != null)
                 {
-                    if (service.Status == ServiceControllerStatus.Running || service.Status == ServiceControllerStatus.StartPending)
+                    if (service.Status == ServiceControllerStatus.Stopped || service.Status == ServiceControllerStatus.StopPending)
                     {
                         service.Start();
+                        service.WaitForStatus(ServiceControllerStatus.Running, new TimeSpan(0, 0, 10));
+
+                        if (service.Status != ServiceControllerStatus.Running)
+                        {
+                            Console.WriteLine("Unable to stop service");
+                        }
+
                         Console.WriteLine("Service restarted");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Service already started");
                     }
                 }
                 else

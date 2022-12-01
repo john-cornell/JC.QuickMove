@@ -15,7 +15,8 @@ namespace JC.QuickMove
     {
         None = 0,
         WPF = 1 << 0,
-        IncludeSharedDesktop = 1 << 8
+        IncludeSharedDesktop = 1 << 8,
+        IncludeSchemaDesktop = 1 << 9
     }
 
     public enum FileAsType { Dll, Pdb, Xml }
@@ -40,7 +41,7 @@ namespace JC.QuickMove
             {
                 Console.WriteLine("qw.exe [wpf billing domain (e.g. Fees) moves wpf dll, pdb and xml to binaries]");
                 Console.WriteLine("[--sd] moves Billing.Shared.Desktop ");
-
+                Console.WriteLine("[--scd] moves Billing.Schema.Desktop ");
                 return;
             }
             SetupOptions(args);
@@ -51,6 +52,8 @@ namespace JC.QuickMove
                 fileMover.MoveBillingWpfFiles(args);
             if (RunOptions.HasFlag(Options.IncludeSharedDesktop))
                 fileMover.MoveSharedDesktop();
+            if (RunOptions.HasFlag(Options.IncludeSchemaDesktop))
+                fileMover.MoveSchemaDesktop();
 
             controller.Start(SmokeballProcessController.SmokeballProcess.Service);
         }
@@ -67,6 +70,8 @@ namespace JC.QuickMove
                     {
                         case "--sd":
                             RunOptions = RunOptions | Options.IncludeSharedDesktop; break;
+                        case "--scd":
+                            RunOptions = RunOptions | Options.IncludeSchemaDesktop; break;
                     }
                 }
             }

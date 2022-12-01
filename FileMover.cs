@@ -12,6 +12,11 @@ namespace JC.QuickMove
         const string BillingBin = "C:\\Versioning\\billing\\bin";
         const string Binaries = "C:\\Program Files\\Smokeball\\binaries";
 
+        public void MoveSchemaDesktop()
+        {
+            MoveDllAndSupportingFile("Billing.Schema.Desktop");
+        }
+
         public void MoveSharedDesktop()
         {
             MoveDllAndSupportingFile("Billing.Shared.Desktop");
