@@ -48,6 +48,12 @@ namespace JC.QuickMove
                     {
                         Console.WriteLine("Stopping service");
                         service.Stop();
+                        service.WaitForStatus(ServiceControllerStatus.Stopped, new TimeSpan(0,0,5));
+
+                        if (service.Status != ServiceControllerStatus.Stopped)
+                        {
+                            Console.WriteLine("Unable to stop service");
+                        }
                     }
                 }
                 else
