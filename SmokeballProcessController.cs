@@ -12,32 +12,21 @@ namespace JC.QuickMove
     internal class SmokeballProcessController
     {
         [Flags]
-        public enum SmokeballProcess { Main = 1, Service = 2 }
+        public enum SmokeballProcess { Main = 1, Service = 2, TrayIcon  = 4 }
 
-        public void Kill(SmokeballProcess processToKill = SmokeballProcess.Main | SmokeballProcess.Service)
+        public void Kill(SmokeballProcess processToKill = SmokeballProcess.Main | SmokeballProcess.TrayIcon | SmokeballProcess.Service)
         {
-            if (processToKill.HasFlag(SmokeballProcess.Main)) 
+            if (processToKill.HasFlag(SmokeballProcess.Main))
             {
-                Process process = Process.GetProcessesByName("Smokeball").FirstOrDefault();
-
-                try
-                {
-                    if (process != null)
-                    {
-                        Console.WriteLine("Smokeball.exe stopped");
-                        process.Kill();
-                    }
-                    else
-                    {
-                        Console.WriteLine("Unable to find Smokeball.exe");
-                    }
-                }
-                catch(Exception ex) 
-                {
-                    Console.WriteLine($"Error stopping Smokeball.exe : {ex.Message}");
-                }
+                KillProcess("Smokeball");
             }
-            
+
+            if (processToKill.HasFlag(SmokeballProcess.TrayIcon))
+            {
+                KillProcess("Smokeball TrayIcon");
+            }
+
+
             if (processToKill.HasFlag(SmokeballProcess.Service)) 
             {
                 ServiceController service = new ServiceController("Smokeball-Windows-Service");
@@ -67,6 +56,28 @@ namespace JC.QuickMove
             }
         }
 
+        private static void KillProcess(string processName)
+        {
+            Process process = Process.GetProcessesByName(processName).FirstOrDefault();
+
+            try
+            {
+                if (process != null)
+                {
+                    Console.WriteLine($"{processName}.exe stopped");
+                    process.Kill();
+                }
+                else
+                {
+                    Console.WriteLine($"Unable to find {processName}.exe");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error stopping {processName}.exe : {ex.Message}");
+            }
+        }
+
         public void Start(SmokeballProcess processToStart = SmokeballProcess.Main | SmokeballProcess.Service)
         {
             if (processToStart.HasFlag(SmokeballProcess.Main))
@@ -91,7 +102,7 @@ namespace JC.QuickMove
                     Console.WriteLine($"Error starting Smokeball.exe : {ex.Message}");
                 }
             }
-
+            
             if (processToStart.HasFlag(SmokeballProcess.Service))
             {
                 ServiceController service = new ServiceController("Smokeball-Windows-Service");
